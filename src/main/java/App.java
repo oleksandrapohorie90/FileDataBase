@@ -1,20 +1,26 @@
+import Entities.Academy;
 import Entities.Group;
+import Repositoty.AcademyRepository;
+import Repositoty.DBContext;
 import Repositoty.GroupRepository;
 
 public class App {
 
     public static void main(String[] args) {
-        GroupRepository repo = new GroupRepository("group.file");
-        //repo.LoadFromFile();
-        repo.Add(new Group(2, "GrowthHungry batch 26", "discord.com")); //in the memory of the app at the moment
-        //repo.SaveChanges(); //it serialized and saved to the file "group.file"
+        DBContext dbContext = new DBContext("db.file");
+        //created some data in memory
+//        Academy newAcademy = new Academy(1, "GrowthHungry");
+//        Group newGroup = new Group(1, "GrowthHungry batch 26", "discord.com");
+//        newGroup.setAcademyId(newAcademy.getId());
+//
+//        //lets save it to the file
+//        AcademyRepository academyRepository = new AcademyRepository(dbContext);
+//        academyRepository.Add(newAcademy);
+//        //academyRepository.SaveChanges();
+//
+//        GroupRepository groupRepository = new GroupRepository(dbContext);
+//        groupRepository.Add(newGroup);
 
-        //next time someone loads the file and can see whats the content
-        //repo.LoadFromFile();
-        //writing to the file after file is created
-        for (Group group : repo.GetAll()) {
-            System.out.println(group.getName());
-            System.out.println(group.getDiscordLink());
-        }
+        System.out.println(dbContext.GetDatabase().toString());
     }
 }
