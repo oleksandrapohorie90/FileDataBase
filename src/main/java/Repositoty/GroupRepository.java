@@ -1,16 +1,16 @@
 package Repositoty;
 
-import Entities.AcademyGroup;
+import Entities.Group;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AcademyGroupRepository implements IRepository<AcademyGroup> {
+public class GroupRepository implements IRepository<Group> {
 
     private final String FILENAME;
 
-    public AcademyGroupRepository(String fileName) {
+    public GroupRepository(String fileName) {
         if (fileName.isEmpty()) {
             FILENAME = "academyGroup";
         } else {
@@ -21,68 +21,69 @@ public class AcademyGroupRepository implements IRepository<AcademyGroup> {
     }
 
     @Override
-    public List<AcademyGroup> GetAll() {
+    public List<Group> GetAll() {
         //we try to always read from the file and if updated anywhere we update from GetAll() result
-        List<AcademyGroup> academyGroups = new ArrayList<>();
+        List<Group> groups = new ArrayList<>();
         try {
             FileInputStream fIn = new FileInputStream(FILENAME);
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILENAME));
-            academyGroups = (List<AcademyGroup>) objectInputStream.readObject();
+            groups = (List<Group>) objectInputStream.readObject();
         } catch (EOFException e) {
 
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error when we load academy geoups from the file: " + FILENAME);
         }
 
-        return academyGroups;
+        return groups;
     }
 
     @Override
-    public AcademyGroup GetById(int id) {
-//return academyGroups.stream().filter(group -> group.getId() == id).findFirst().orElse(null);
-        List<AcademyGroup> academyGroups = GetAll();
-        for (AcademyGroup academyGroup : academyGroups) {
-            if (academyGroup.getId() == id) {
-                return academyGroup;
+    public Group GetById(int id) {
+//return groups.stream().filter(group -> group.getId() == id).findFirst().orElse(null);
+        List<Group> groups = GetAll();
+        for (Group group : groups) {
+            if (group.getId() == id) {
+                return group;
             }
         }
         return null;
     }
 
     @Override
-    public void Update(AcademyGroup groupToUpdate) {
+    public void Update(Group groupToUpdate) {
         //1 way
-        List<AcademyGroup> academyGroups = GetAll();
-        for (AcademyGroup academyGroup : academyGroups) {
-            if (academyGroup.getId() == groupToUpdate.getId()) {
-                academyGroup.setName(groupToUpdate.getName());
-                academyGroup.setDiscordLink(groupToUpdate.getDiscordLink());
+        List<Group> groups = GetAll();
+        for (Group group : groups) {
+            if (group.getId() == groupToUpdate.getId()) {
+                group.setName(groupToUpdate.getName());
+                group.setDiscordLink(groupToUpdate.getDiscordLink());
+                group.setAcademyId(groupToUpdate.getAcademyId());
             }
         }
 
-        SaveChanges(academyGroups);
+        SaveChanges(groups);
     }
 
     @Override
     public void Remove(int id) {
-        AcademyGroup academyGroupToRemove = this.GetById(id);
-        List<AcademyGroup> academyGroups = GetAll();
-        academyGroups.remove(academyGroupToRemove);
-        SaveChanges(academyGroups);
+        Group groupToRemove = this.GetById(id);
+        List<Group> groups = GetAll();
+        groups.remove(groupToRemove);
+        SaveChanges(groups);
     }
 
     @Override
-    public void Add(AcademyGroup newGroup) {
-        List<AcademyGroup> academyGroups = GetAll();
+    public void Add(Group newGroup) {
+        List<Group> groups = GetAll();
         //each time we take academy group we update it and save it to the file
-        academyGroups.add(newGroup);
-        SaveChanges(academyGroups);
+        groups.add(newGroup);
+        SaveChanges(groups);
     }
 
-    public void SaveChanges(List<AcademyGroup> academyGroups) {
+    public void SaveChanges(List<Group> groups) {
         //serialize the object
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(FILENAME))) {
-            objectOutputStream.writeObject(academyGroups);
+            objectOutputStream.writeObject(groups);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,7 +97,7 @@ public class AcademyGroupRepository implements IRepository<AcademyGroup> {
 //            ObjectInputStream objectIn = new ObjectInputStream(fIn);
 //
 //            if (objectIn.available() > 0) {
-//                this.academyGroups = (List<AcademyGroup>) objectIn.readObject();
+//                this.academyGroups = (List<Group>) objectIn.readObject();
 //            }
 //
 //            objectIn.close();

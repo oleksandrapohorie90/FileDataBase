@@ -1,7 +1,5 @@
 package Repositoty;
 
-import Entities.AcademyGroup;
-
 import java.util.List;
 
 public interface IRepository<T> {
