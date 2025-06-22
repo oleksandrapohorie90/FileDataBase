@@ -1,5 +1,6 @@
 package Repositoty;
 
+import Entities.Academy;
 import Entities.Group;
 
 import java.io.*;
@@ -20,7 +21,6 @@ public class GroupRepository implements IRepository<Group> {
         createNewFileIfNew();
     }
 
-    @Override
     public List<Group> GetAll() {
         //we try to always read from the file and if updated anywhere we update from GetAll() result
         List<Group> groups = new ArrayList<>();
@@ -123,4 +123,5 @@ public class GroupRepository implements IRepository<Group> {
             System.out.println("Error during creating a file " + e.getMessage());
         }
     }
+
 }
