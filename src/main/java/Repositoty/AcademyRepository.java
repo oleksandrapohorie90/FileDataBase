@@ -8,33 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AcademyRepository implements IRepository<Academy> {
-    private final String FILENAME;
+    DBContext dbContext;
 
-    public AcademyRepository(String fileName) {
-        if (fileName.isEmpty()) {
-            FILENAME = "academyGroup";
-        } else {
-            FILENAME = fileName;
-        }
-
-        createNewFileIfNew();
+    public AcademyRepository(DBContext dbContext) {
+        this.dbContext = dbContext;
     }
 
     @Override
     public List<Academy> GetAll() {
         //we try to always read from the file and if updated anywhere we update from GetAll() result
-        List<Academy> academies = new ArrayList<>();
-        try {
-            FileInputStream fIn = new FileInputStream(FILENAME);
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILENAME));
-            academies = (List<Academy>) objectInputStream.readObject();
-        } catch (EOFException e) {
-
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error when we load academy geoups from the file: " + FILENAME);
-        }
-
-        return academies;
+        DbSet dbSet = dbContext.GetDatabase();
+        return dbSet.getAcademies();
     }
 
     @Override
@@ -80,25 +64,23 @@ public class AcademyRepository implements IRepository<Academy> {
 
     public void SaveChanges(List<Academy> academies) {
         //serialize the object
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(FILENAME))) {
-            objectOutputStream.writeObject(academies);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        DbSet dbSet = dbContext.GetDatabase();
+        dbSet.setAcademies(academies);
+        dbContext.SaveChanges(dbSet);
     }
 
-    private void createNewFileIfNew() {
-        File file = new File(FILENAME);
-        try {
-            if (!file.exists()) {
-                if (file.createNewFile()) {
-                    System.out.println("File created " + file.getAbsolutePath());
-                } else {
-                    System.out.println("Fail to create " + file.getAbsoluteFile());
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error during creating a file " + e.getMessage());
-        }
-    }
+//    private void createNewFileIfNew() {
+//        File file = new File(FILENAME);
+//        try {
+//            if (!file.exists()) {
+//                if (file.createNewFile()) {
+//                    System.out.println("File created " + file.getAbsolutePath());
+//                } else {
+//                    System.out.println("Fail to create " + file.getAbsoluteFile());
+//                }
+//            }
+//        } catch (IOException e) {
+//            System.out.println("Error during creating a file " + e.getMessage());
+//        }
+//    }
 }

@@ -21,6 +21,45 @@ public class DbSet implements Serializable {
         courses = new ArrayList<>();
         mentors = new ArrayList<>();
         mentorsToCourses = new ArrayList<>();
+    }
 
+    public List<Academy> getAcademies() {
+        return academies;
+    }
+
+    public void setAcademies(List<Academy> academies) {
+        this.academies = academies;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public List<Mentor> getMentors() {
+        return mentors;
+    }
+
+    public void setMentors(List<Mentor> mentors) {
+        this.mentors = mentors;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    public List<MentorsToCourses> getMentorsToCourses() {
+        return mentorsToCourses;
+    }
+
+    public void setMentorsToCourses(List<MentorsToCourses> mentorsToCourses) {
+        this.mentorsToCourses = mentorsToCourses;
     }
 }
