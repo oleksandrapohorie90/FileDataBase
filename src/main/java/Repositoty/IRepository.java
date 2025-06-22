@@ -10,6 +10,6 @@ public interface IRepository<T> {
     void Update(T group);
     void Remove(int id);
     void Add(T newGroup);
-    void SaveChanges();
-    void LoadFromFile();
+    void SaveChanges(List<T> entities);
+    //void LoadFromFile();
 }

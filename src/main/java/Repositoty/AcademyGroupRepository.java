@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AcademyGroupRepository implements IRepository<AcademyGroup> {
-    private List<AcademyGroup> academyGroups;
+
     private final String FILENAME;
 
     public AcademyGroupRepository(String fileName) {
-        academyGroups = new ArrayList<>();
-
         if (fileName.isEmpty()) {
             FILENAME = "academyGroup";
         } else {
@@ -24,13 +22,25 @@ public class AcademyGroupRepository implements IRepository<AcademyGroup> {
 
     @Override
     public List<AcademyGroup> GetAll() {
+        //we try to always read from the file and if updated anywhere we update from GetAll() result
+        List<AcademyGroup> academyGroups = new ArrayList<>();
+        try {
+            FileInputStream fIn = new FileInputStream(FILENAME);
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILENAME));
+            academyGroups = (List<AcademyGroup>) objectInputStream.readObject();
+        } catch (EOFException e) {
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error when we load academy geoups from the file: " + FILENAME);
+        }
+
         return academyGroups;
     }
 
     @Override
     public AcademyGroup GetById(int id) {
-//        return academyGroups.stream().filter(group -> group.getId() == id).findFirst().orElse(null);
-
+//return academyGroups.stream().filter(group -> group.getId() == id).findFirst().orElse(null);
+        List<AcademyGroup> academyGroups = GetAll();
         for (AcademyGroup academyGroup : academyGroups) {
             if (academyGroup.getId() == id) {
                 return academyGroup;
@@ -40,55 +50,63 @@ public class AcademyGroupRepository implements IRepository<AcademyGroup> {
     }
 
     @Override
-    public void Update(AcademyGroup group) {
+    public void Update(AcademyGroup groupToUpdate) {
         //1 way
-        AcademyGroup academyGroupToUpdate = this.GetById(group.getId());
-        academyGroupToUpdate.setName(group.getName());
-        academyGroupToUpdate.setDiscordLink(group.getDiscordLink());
+        List<AcademyGroup> academyGroups = GetAll();
+        for (AcademyGroup academyGroup : academyGroups) {
+            if (academyGroup.getId() == groupToUpdate.getId()) {
+                academyGroup.setName(groupToUpdate.getName());
+                academyGroup.setDiscordLink(groupToUpdate.getDiscordLink());
+            }
+        }
+
+        SaveChanges(academyGroups);
     }
 
     @Override
     public void Remove(int id) {
         AcademyGroup academyGroupToRemove = this.GetById(id);
+        List<AcademyGroup> academyGroups = GetAll();
         academyGroups.remove(academyGroupToRemove);
+        SaveChanges(academyGroups);
     }
 
     @Override
     public void Add(AcademyGroup newGroup) {
-        this.academyGroups.add(newGroup);
+        List<AcademyGroup> academyGroups = GetAll();
+        //each time we take academy group we update it and save it to the file
+        academyGroups.add(newGroup);
+        SaveChanges(academyGroups);
     }
 
-    @Override
-    public void SaveChanges() { //serialize the object
-        try {
-            FileOutputStream fOut = new FileOutputStream(FILENAME);
-            ObjectOutput objectOut = new ObjectOutputStream(fOut);
-            objectOut.writeObject(academyGroups);
-            objectOut.close();
-            fOut.close();
+    public void SaveChanges(List<AcademyGroup> academyGroups) {
+        //serialize the object
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(FILENAME))) {
+            objectOutputStream.writeObject(academyGroups);
         } catch (IOException e) {
-            System.out.println("Error when we save changes to the file: " + FILENAME);
+            e.printStackTrace();
         }
     }
 
-    @Override
-    public void LoadFromFile() {//deserialize the object
-        try {
-            FileInputStream fIn = new FileInputStream(FILENAME);
-            ObjectInputStream objectIn = new ObjectInputStream(fIn);
 
-            if (objectIn.available() > 0) {
-                this.academyGroups = (List<AcademyGroup>) objectIn.readObject();
-            }
-
-            objectIn.close();
-            fIn.close();
-        } catch (IOException e) {
-            System.out.println("Error when we load academy geoups from the file: " + FILENAME);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Override
+//    public void LoadFromFile() {//deserialize the object
+//        try {
+//            FileInputStream fIn = new FileInputStream(FILENAME);
+//            ObjectInputStream objectIn = new ObjectInputStream(fIn);
+//
+//            if (objectIn.available() > 0) {
+//                this.academyGroups = (List<AcademyGroup>) objectIn.readObject();
+//            }
+//
+//            objectIn.close();
+//            fIn.close();
+//        } catch (IOException e) {
+//            System.out.println("Error when we load academy geoups from the file: " + FILENAME);
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     private void createNewFileIfNew() {
         File file = new File(FILENAME);
