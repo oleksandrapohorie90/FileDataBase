@@ -6,13 +6,15 @@ public class App {
     public static void main(String[] args) {
         AcademyGroupRepository repo = new AcademyGroupRepository("group.file");
         //repo.LoadFromFile();
-        repo.Add(new AcademyGroup(1, "GrowthHungry batch 25", "")); //in the memory of the app at the moment
+        repo.Add(new AcademyGroup(2, "GrowthHungry batch 26", "discord.com")); //in the memory of the app at the moment
         //repo.SaveChanges(); //it serialized and saved to the file "group.file"
 
         //next time someone loads the file and can see whats the content
         //repo.LoadFromFile();
-//        for (AcademyGroup academyGroup : repo.GetAll()) {
-//            System.out.println(academyGroup.getName());
-//        }
+        //writing to the file after file is created
+        for (AcademyGroup academyGroup : repo.GetAll()) {
+            System.out.println(academyGroup.getName());
+            System.out.println(academyGroup.getDiscordLink());
+        }
     }
 }
