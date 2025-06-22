@@ -1,11 +1,19 @@
 package Entities;
 
-public class AcademyGroup {
+import java.io.Serializable;
+
+public class AcademyGroup implements Serializable {
     private int id;
     private String name;
 
     //add sensitive field with transient
     private transient String discordLink;
+
+    public AcademyGroup(int id, String name, String discordLink){
+        this.id = id;
+        this.name = name;
+        this.discordLink = discordLink;
+    }
 
     public int getId() {
         return id;
