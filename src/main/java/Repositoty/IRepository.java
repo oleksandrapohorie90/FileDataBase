@@ -1,10 +1,11 @@
 package Repositoty;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface IRepository<T> {
-    List<T> GetAll();
+    Map<Integer, T> GetAll();
 
     T GetById(int id);
 

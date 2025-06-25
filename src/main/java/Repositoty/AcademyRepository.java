@@ -6,6 +6,7 @@ import Entities.Group;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AcademyRepository implements IRepository<Academy> {
     DBContext dbContext;
@@ -15,7 +16,7 @@ public class AcademyRepository implements IRepository<Academy> {
     }
 
     @Override
-    public List<Academy> GetAll() {
+    public Map<Integer, Academy> GetAll() {
         //we try to always read from the file and if updated anywhere we update from GetAll() result
         DbSet dbSet = dbContext.GetDatabase();
         return dbSet.getAcademies();
@@ -24,45 +25,53 @@ public class AcademyRepository implements IRepository<Academy> {
     @Override
     public Academy GetById(int id) {
 //return groups.stream().filter(group -> group.getId() == id).findFirst().orElse(null);
-        List<Academy> academies = GetAll();
-        for (Academy academy : academies) {
-            if (academy.getId() == id) {
-                return academy;
-            }
-        }
-        return null;
+        Map<Integer, Academy> academies = GetAll();
+        //full scan you need to go and check all academies
+//        for (Academy academy : academies) {
+//            if (academy.getId() == id) {
+//                return academy;
+//            }
+//        }
+        return academies.get(id); //very fast, we dont look at other rows in table
     }
 
     @Override
     public void Update(Academy academyToUpdate) {
         //1 way
-        List<Academy> academies = GetAll();
-        for (Academy academy : academies) {
-            if (academy.getId() == academyToUpdate.getId()) {
-                academy.setDescription(academyToUpdate.getDescription());
-            }
-        }
+        Map<Integer, Academy> academies = GetAll();
+        academies.get(academyToUpdate.getId()).setDescription(academyToUpdate.getDescription());//we dont need full scan, as we can
+        //full scan of all academies
+//        for (Academy academy : academies) {
+//            if (academy.getId() == academyToUpdate.getId()) {
+//                academy.setDescription(academyToUpdate.getDescription());
+//            }
+//        }
 
         SaveChanges(academies);
     }
 
     @Override
     public void Remove(int id) {
-        Academy academyToRemove = this.GetById(id);
-        List<Academy> academies = GetAll();
-        academies.remove(academyToRemove);
+        //Academy academyToRemove = this.GetById(id);
+        Map<Integer, Academy> academies = GetAll();
+        academies.remove(id);
         SaveChanges(academies);
     }
 
     @Override
     public void Add(Academy newGroup) {
-        List<Academy> academies = GetAll();
+        Map<Integer, Academy> academies = GetAll();
         //each time we take academy group we update it and save it to the file
-        academies.add(newGroup);
+        if (academies.containsKey(newGroup.getId())) {
+            System.out.println("Academy with this id already exists.");
+        } else {
+            academies.put(newGroup.getId(), newGroup);
+        }
+
         SaveChanges(academies);
     }
 
-    public void SaveChanges(List<Academy> academies) {
+    public void SaveChanges(Map<Integer, Academy> academies) {
         //serialize the object
         DbSet dbSet = dbContext.GetDatabase();
         dbSet.setAcademies(academies);

@@ -7,38 +7,22 @@ import java.util.*;
 
 public class DbSet implements Serializable {
 
-    private List<Academy> academies;
-    private List<Group> groups;
-    private List<Mentor> mentors;
-    private List<Course> courses;
-    private List<MentorsToCourses> mentorsToCourses;
+    private Map<Integer, Academy> academies;
+    private Map<Integer, Group> groups;
+    private Map<Integer, Mentor> mentors;
+    private Map<Integer, Course> courses;
+    private Map<Integer, MentorsToCourses> mentorsToCourses;
     //for no clustered index
     private Map<Integer, Set<Group>> academyNCIndexInGroupTable;
 
     public DbSet() {
         //we add all the entities in one place
-        academies = new ArrayList<>();
-        groups = new ArrayList<>();
-        courses = new ArrayList<>();
-        mentors = new ArrayList<>();
-        mentorsToCourses = new ArrayList<>();
+        academies = new HashMap<>();
+        groups = new HashMap<>();
+        courses = new HashMap<>();
+        mentors = new HashMap<>();
+        mentorsToCourses = new HashMap<>();
         academyNCIndexInGroupTable = new HashMap<>();
-    }
-
-    public List<Academy> getAcademies() {
-        return academies;
-    }
-
-    public void setAcademies(List<Academy> academies) {
-        this.academies = academies;
-    }
-
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
     }
 
     public Map<Integer, Set<Group>> getAcademyNCIndexInGroupTable() {
@@ -49,27 +33,43 @@ public class DbSet implements Serializable {
         this.academyNCIndexInGroupTable = academyNCIndexInGroupTable;
     }
 
-    public List<Mentor> getMentors() {
+    public Map<Integer, Academy> getAcademies() {
+        return academies;
+    }
+
+    public void setAcademies(Map<Integer, Academy> academies) {
+        this.academies = academies;
+    }
+
+    public Map<Integer, Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Map<Integer, Group> groups) {
+        this.groups = groups;
+    }
+
+    public Map<Integer, Mentor> getMentors() {
         return mentors;
     }
 
-    public void setMentors(List<Mentor> mentors) {
+    public void setMentors(Map<Integer, Mentor> mentors) {
         this.mentors = mentors;
     }
 
-    public List<Course> getCourses() {
+    public Map<Integer, Course> getCourses() {
         return courses;
     }
 
-    public void setCourses(List<Course> courses) {
+    public void setCourses(Map<Integer, Course> courses) {
         this.courses = courses;
     }
 
-    public List<MentorsToCourses> getMentorsToCourses() {
+    public Map<Integer, MentorsToCourses> getMentorsToCourses() {
         return mentorsToCourses;
     }
 
-    public void setMentorsToCourses(List<MentorsToCourses> mentorsToCourses) {
+    public void setMentorsToCourses(Map<Integer, MentorsToCourses> mentorsToCourses) {
         this.mentorsToCourses = mentorsToCourses;
     }
 }
