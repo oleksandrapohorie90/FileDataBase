@@ -3,10 +3,7 @@ package Repositoty;
 import Entities.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DbSet implements Serializable {
 
@@ -15,7 +12,8 @@ public class DbSet implements Serializable {
     private List<Mentor> mentors;
     private List<Course> courses;
     private List<MentorsToCourses> mentorsToCourses;
-    private Map<Integer, Group> academyNCIndexInGroupTable;
+    //for no clustered index
+    private Map<Integer, Set<Group>> academyNCIndexInGroupTable;
 
     public DbSet() {
         //we add all the entities in one place
@@ -43,11 +41,11 @@ public class DbSet implements Serializable {
         this.groups = groups;
     }
 
-    public Map<Integer, Group> getAcademyNCIndexInGroupTable() {
+    public Map<Integer, Set<Group>> getAcademyNCIndexInGroupTable() {
         return academyNCIndexInGroupTable;
     }
 
-    public void setAcademyNCIndexInGroupTable(Map<Integer, Group> academyNCIndexInGroupTable) {
+    public void setAcademyNCIndexInGroupTable(Map<Integer, Set<Group>> academyNCIndexInGroupTable) {
         this.academyNCIndexInGroupTable = academyNCIndexInGroupTable;
     }
 
