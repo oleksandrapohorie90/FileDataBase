@@ -4,8 +4,11 @@ import java.io.*;
 public class DBContext {
 
     private final String FILENAME;
+    private boolean containsNewChanges;
+    private DbSet dbSet;
 
     public DBContext(String fileName) {
+        containsNewChanges = true;
         if (fileName.isEmpty()) {
             FILENAME = "academyDb";
         } else {
@@ -31,6 +34,7 @@ public class DBContext {
     }
 
     public void SaveChanges(DbSet dbSet) {
+        containsNewChanges = true;
         //serialize the object
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(FILENAME))) {
             objectOutputStream.writeObject(dbSet);
@@ -41,15 +45,17 @@ public class DBContext {
 
     public DbSet GetDatabase() {
         //we try to always read from the file and if updated anywhere we update from GetAll() result
-        DbSet dbSet = new DbSet();
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILENAME))) {
-            dbSet = (DbSet) objectInputStream.readObject();
-        } catch (EOFException e) {
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+     if(containsNewChanges) {
+         dbSet = new DbSet();
+         try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILENAME))) {
+             dbSet = (DbSet) objectInputStream.readObject();
+         } catch (IOException | ClassNotFoundException e) {
+             e.printStackTrace();
+         }
+         containsNewChanges = false;
+     }
 
         return dbSet;
     }
+
 }
