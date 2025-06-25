@@ -4,7 +4,9 @@ import Entities.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DbSet implements Serializable {
 
@@ -13,14 +15,16 @@ public class DbSet implements Serializable {
     private List<Mentor> mentors;
     private List<Course> courses;
     private List<MentorsToCourses> mentorsToCourses;
+    private Map<Integer, Group> academyNCIndexInGroupTable;
 
     public DbSet() {
-        //we add all the enitites in one place
+        //we add all the entities in one place
         academies = new ArrayList<>();
         groups = new ArrayList<>();
         courses = new ArrayList<>();
         mentors = new ArrayList<>();
         mentorsToCourses = new ArrayList<>();
+        academyNCIndexInGroupTable = new HashMap<>();
     }
 
     public List<Academy> getAcademies() {
@@ -37,6 +41,14 @@ public class DbSet implements Serializable {
 
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public Map<Integer, Group> getAcademyNCIndexInGroupTable() {
+        return academyNCIndexInGroupTable;
+    }
+
+    public void setAcademyNCIndexInGroupTable(Map<Integer, Group> academyNCIndexInGroupTable) {
+        this.academyNCIndexInGroupTable = academyNCIndexInGroupTable;
     }
 
     public List<Mentor> getMentors() {
